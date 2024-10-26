@@ -1,25 +1,21 @@
-// Personnel Model
-class Personnel {
+class Entreprise {
   final String id;
-  final String entrepriseId;
   final String nom;
-  final String? remarque;
+  final String userId;
   final DateTime createdAt;
 
-  Personnel({
+  Entreprise({
     required this.id,
-    required this.entrepriseId,
     required this.nom,
-    this.remarque,
+    required this.userId,
     required this.createdAt,
   });
 
-  factory Personnel.fromJson(Map<String, dynamic> json) {
-    return Personnel(
+  factory Entreprise.fromJson(Map<String, dynamic> json) {
+    return Entreprise(
       id: json['id'],
-      entrepriseId: json['entreprise_id'],
       nom: json['nom'],
-      remarque: json['remarque'],
+      userId: json['user_id'],
       createdAt: DateTime.parse(json['created_at']),
     );
   }
@@ -27,25 +23,22 @@ class Personnel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'entreprise_id': entrepriseId,
       'nom': nom,
-      'remarque': remarque,
+      'user_id': userId,
       'created_at': createdAt.toIso8601String(),
     };
   }
 
-  Personnel copyWith({
+  Entreprise copyWith({
     String? id,
-    String? entrepriseId,
     String? nom,
-    String? remarque,
+    String? userId,
     DateTime? createdAt,
   }) {
-    return Personnel(
+    return Entreprise(
       id: id ?? this.id,
-      entrepriseId: entrepriseId ?? this.entrepriseId,
       nom: nom ?? this.nom,
-      remarque: remarque ?? this.remarque,
+      userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
     );
   }

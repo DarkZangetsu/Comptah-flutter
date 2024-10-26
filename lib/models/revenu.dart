@@ -1,63 +1,75 @@
-class Paiement {
+class Revenu {
   final String id;
-  final String nPaiement;
+  final String entrepriseId;
+  final String nRevenu;
   final DateTime jour;
-  final String idAffectation;
+  final String? raison;
   final double montant;
   final String? mTransaction;
   final String? remarque;
+  final DateTime createdAt;
 
-  Paiement({
+  Revenu({
     required this.id,
-    required this.nPaiement,
+    required this.entrepriseId,
+    required this.nRevenu,
     required this.jour,
-    required this.idAffectation,
+    this.raison,
     required this.montant,
     this.mTransaction,
     this.remarque,
+    required this.createdAt,
   });
 
-  factory Paiement.fromJson(Map<String, dynamic> json) {
-    return Paiement(
+  factory Revenu.fromJson(Map<String, dynamic> json) {
+    return Revenu(
       id: json['id'],
-      nPaiement: json['n_paiement'],
+      entrepriseId: json['entreprise_id'],
+      nRevenu: json['n_revenu'],
       jour: DateTime.parse(json['jour']),
-      idAffectation: json['id_affectation'],
+      raison: json['raison'],
       montant: json['montant'].toDouble(),
       mTransaction: json['m_transaction'],
       remarque: json['remarque'],
+      createdAt: DateTime.parse(json['created_at']),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'n_paiement': nPaiement,
+      'entreprise_id': entrepriseId,
+      'n_revenu': nRevenu,
       'jour': jour.toIso8601String(),
-      'id_affectation': idAffectation,
+      'raison': raison,
       'montant': montant,
       'm_transaction': mTransaction,
       'remarque': remarque,
+      'created_at': createdAt.toIso8601String(),
     };
   }
 
-  Paiement copyWith({
+  Revenu copyWith({
     String? id,
-    String? nPaiement,
+    String? entrepriseId,
+    String? nRevenu,
     DateTime? jour,
-    String? idAffectation,
+    String? raison,
     double? montant,
     String? mTransaction,
     String? remarque,
+    DateTime? createdAt,
   }) {
-    return Paiement(
+    return Revenu(
       id: id ?? this.id,
-      nPaiement: nPaiement ?? this.nPaiement,
+      entrepriseId: entrepriseId ?? this.entrepriseId,
+      nRevenu: nRevenu ?? this.nRevenu,
       jour: jour ?? this.jour,
-      idAffectation: idAffectation ?? this.idAffectation,
+      raison: raison ?? this.raison,
       montant: montant ?? this.montant,
       mTransaction: mTransaction ?? this.mTransaction,
       remarque: remarque ?? this.remarque,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

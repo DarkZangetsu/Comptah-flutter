@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project/screens/chantier.dart';
+import 'package:project/screens/login_screen.dart';
+
 import 'config/supabase_config.dart';
 
 void main() async {
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ChantierListScreen(),
+      home: LoginScreen(),
     );
   }
 }
