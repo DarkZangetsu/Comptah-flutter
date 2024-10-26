@@ -7,7 +7,8 @@ import '../providers/affectation_provider.dart';
 class AffectationScreen extends ConsumerStatefulWidget {
   final String entrepriseId;
 
-  const AffectationScreen({Key? key, required this.entrepriseId}) : super(key: key);
+  const AffectationScreen({Key? key, required this.entrepriseId})
+      : super(key: key);
 
   @override
   AffectationScreenState createState() => AffectationScreenState();
@@ -21,7 +22,9 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(affectationListProvider.notifier).loadAffectations(widget.entrepriseId);
+      ref
+          .read(affectationListProvider.notifier)
+          .loadAffectations(widget.entrepriseId);
     });
   }
 
@@ -32,10 +35,17 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Affectations'),
+        title: const Text(
+          'Affectations',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xffea6b24),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(
+              Icons.filter_list,
+              color: Colors.white,
+            ),
             onPressed: () => _showFilterDialog(context),
           ),
         ],
@@ -72,8 +82,12 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xffea6b24),
         onPressed: () => _showAffectationDialog(context),
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -90,7 +104,8 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: ListTile(
-            title: Text('${affectation.personnel ?? 'Non assigné'} - ${affectation.tache ?? 'Pas de tâche'}'),
+            title: Text(
+                '${affectation.personnel ?? 'Non assigné'} - ${affectation.tache ?? 'Pas de tâche'}'),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -105,11 +120,13 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
               children: [
                 IconButton(
                   icon: const Icon(Icons.edit),
-                  onPressed: () => _showAffectationDialog(context, affectation: affectation),
+                  onPressed: () =>
+                      _showAffectationDialog(context, affectation: affectation),
                 ),
                 IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _showDeleteConfirmation(context, affectation),
+                  onPressed: () =>
+                      _showDeleteConfirmation(context, affectation),
                 ),
               ],
             ),
@@ -119,25 +136,33 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
     );
   }
 
-
   Future<void> _showFilterDialog(BuildContext context) async {
     final filters = ref.read(affectationFiltersProvider);
     DateTime? startDate = filters.dateDebut;
     DateTime? endDate = filters.dateFin;
     String? selectedChantierId = filters.chantierId;
 
-    final chantiers = await ref.read(availableChangiersProvider(widget.entrepriseId).future);
+    final chantiers =
+        await ref.read(availableChangiersProvider(widget.entrepriseId).future);
 
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Filtres'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+          title: Container(
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
+            ),
+            child: const Text('Filtres', style: TextStyle(fontWeight: FontWeight.bold),)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text('Date début: ${startDate != null ? _dateFormat.format(startDate!) : 'Non définie'}'),
+                title: Text(
+                    'Date début: ${startDate != null ? _dateFormat.format(startDate!) : 'Non définie'}'),
                 trailing: IconButton(
                   icon: const Icon(Icons.calendar_today),
                   onPressed: () async {
@@ -154,7 +179,8 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
                 ),
               ),
               ListTile(
-                title: Text('Date fin: ${endDate != null ? _dateFormat.format(endDate!) : 'Non définie'}'),
+                title: Text(
+                    'Date fin: ${endDate != null ? _dateFormat.format(endDate!) : 'Non définie'}'),
                 trailing: IconButton(
                   icon: const Icon(Icons.calendar_today),
                   onPressed: () async {
@@ -174,24 +200,28 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
                 value: selectedChantierId,
                 decoration: const InputDecoration(labelText: 'Chantier'),
                 items: [
-                  const DropdownMenuItem(value: null, child: Text('Tous les chantiers')),
+                  const DropdownMenuItem(
+                      value: null, child: Text('Tous les chantiers')),
                   ...chantiers.map((chantier) => DropdownMenuItem(
-                    value: chantier.id,
-                    child: Text(chantier.nChantier),
-                  )),
+                        value: chantier.id,
+                        child: Text(chantier.nChantier),
+                      )),
                 ],
-                onChanged: (value) => setState(() => selectedChantierId = value),
+                onChanged: (value) =>
+                    setState(() => selectedChantierId = value),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Annuler'),
+              child: const Text('Annuler', style: TextStyle(color: Colors.black),),
             ),
             TextButton(
+              style: TextButton.styleFrom(backgroundColor: const Color(0xffea6b24)),
               onPressed: () {
-                ref.read(affectationFiltersProvider.notifier).state = AffectationFilters(
+                ref.read(affectationFiltersProvider.notifier).state =
+                    AffectationFilters(
                   dateDebut: startDate,
                   dateFin: endDate,
                   chantierId: selectedChantierId,
@@ -200,7 +230,7 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
                 _applyFilters();
                 Navigator.pop(context);
               },
-              child: const Text('Appliquer'),
+              child: const Text('Appliquer', style: TextStyle(color: Colors.white),),
             ),
           ],
         ),
@@ -208,7 +238,8 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
     );
   }
 
-  Future<void> _showAffectationDialog(BuildContext context, {Affectation? affectation}) async {
+  Future<void> _showAffectationDialog(BuildContext context,
+      {Affectation? affectation}) async {
     final isEditing = affectation != null;
     final formKey = GlobalKey<FormState>();
     DateTime selectedDate = affectation?.jour ?? DateTime.now();
@@ -219,14 +250,25 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
       text: affectation?.salaireMax?.toString() ?? '',
     );
 
-    final personnel = await ref.read(availablePersonnelProvider(widget.entrepriseId).future);
-    final chantiers = await ref.read(availableChangiersProvider(widget.entrepriseId).future);
+    final personnel =
+        await ref.read(availablePersonnelProvider(widget.entrepriseId).future);
+    final chantiers =
+        await ref.read(availableChangiersProvider(widget.entrepriseId).future);
 
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: Text(isEditing ? 'Modifier l\'affectation' : 'Nouvelle affectation'),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6),
+          ),
+          title: Container(
+            decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
+            ),
+            child: Text(
+                isEditing ? 'Modifier l\'affectation' : 'Nouvelle affectation', style: const TextStyle(fontWeight: FontWeight.bold),),
+          ),
           content: Form(
             key: formKey,
             child: SingleChildScrollView(
@@ -254,36 +296,45 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
                     value: selectedPersonnelId,
                     decoration: const InputDecoration(labelText: 'Personnel'),
                     items: [
-                      const DropdownMenuItem(value: null, child: Text('Sélectionner un personnel')),
+                      const DropdownMenuItem(
+                          value: null,
+                          child: Text('Sélectionner un personnel')),
                       ...personnel.map((p) => DropdownMenuItem(
-                        value: p.id,
-                        child: Text(p.nom),
-                      )),
+                            value: p.id,
+                            child: Text(p.nom),
+                          )),
                     ],
-                    onChanged: (value) => setState(() => selectedPersonnelId = value),
-                    validator: (value) => value == null ? 'Ce champ est requis' : null,
+                    onChanged: (value) =>
+                        setState(() => selectedPersonnelId = value),
+                    validator: (value) =>
+                        value == null ? 'Ce champ est requis' : null,
                   ),
                   DropdownButtonFormField<String>(
                     value: selectedChantierId,
                     decoration: const InputDecoration(labelText: 'Chantier'),
                     items: [
-                      const DropdownMenuItem(value: null, child: Text('Sélectionner un chantier')),
+                      const DropdownMenuItem(
+                          value: null, child: Text('Sélectionner un chantier')),
                       ...chantiers.map((c) => DropdownMenuItem(
-                        value: c.id,
-                        child: Text(c.nChantier),
-                      )),
+                            value: c.id,
+                            child: Text(c.nChantier),
+                          )),
                     ],
-                    onChanged: (value) => setState(() => selectedChantierId = value),
-                    validator: (value) => value == null ? 'Ce champ est requis' : null,
+                    onChanged: (value) =>
+                        setState(() => selectedChantierId = value),
+                    validator: (value) =>
+                        value == null ? 'Ce champ est requis' : null,
                   ),
                   TextFormField(
                     controller: tacheController,
                     decoration: const InputDecoration(labelText: 'Tâche'),
-                    validator: (value) => value?.isEmpty == true ? 'Ce champ est requis' : null,
+                    validator: (value) =>
+                        value?.isEmpty == true ? 'Ce champ est requis' : null,
                   ),
                   TextFormField(
                     controller: salaireController,
-                    decoration: const InputDecoration(labelText: 'Salaire maximum'),
+                    decoration:
+                        const InputDecoration(labelText: 'Salaire maximum'),
                     keyboardType: TextInputType.number,
                     validator: (value) {
                       if (value?.isEmpty == true) return null;
@@ -300,9 +351,10 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Annuler'),
+              child: const Text('Annuler', style: TextStyle(color: Colors.black),),
             ),
             TextButton(
+              style: TextButton.styleFrom(backgroundColor: const Color(0xffea6b24)),
               onPressed: () async {
                 if (formKey.currentState?.validate() == true) {
                   // Créer une nouvelle instance d'Affectation
@@ -317,15 +369,18 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
                         ? double.parse(salaireController.text)
                         : null,
                     createdAt: affectation?.createdAt ?? DateTime.now(),
-                    personnel: null, // Ces valeurs seront remplies par la base de données
+                    personnel:
+                        null, // Ces valeurs seront remplies par la base de données
                   );
 
                   try {
                     if (isEditing) {
-                      await ref.read(affectationListProvider.notifier)
+                      await ref
+                          .read(affectationListProvider.notifier)
                           .updateAffectation(newAffectation);
                     } else {
-                      await ref.read(affectationListProvider.notifier)
+                      await ref
+                          .read(affectationListProvider.notifier)
                           .addAffectation(newAffectation);
                     }
 
@@ -353,7 +408,7 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
                   }
                 }
               },
-              child: Text(isEditing ? 'Modifier' : 'Créer'),
+              child: Text(isEditing ? 'Modifier' : 'Créer', style: const TextStyle(color: Colors.white),),
             ),
           ],
         ),
@@ -361,12 +416,17 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
     );
   }
 
-  Future<void> _showDeleteConfirmation(BuildContext context, Affectation affectation) async {
+  Future<void> _showDeleteConfirmation(
+      BuildContext context, Affectation affectation) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
         title: const Text('Confirmer la suppression'),
-        content: const Text('Voulez-vous vraiment supprimer cette affectation ?'),
+        content:
+            const Text('Voulez-vous vraiment supprimer cette affectation ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
@@ -381,7 +441,8 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
     );
 
     if (confirmed == true) {
-      await ref.read(affectationListProvider.notifier)
+      await ref
+          .read(affectationListProvider.notifier)
           .deleteAffectation(affectation.id, affectation.entrepriseId);
 
       if (mounted) {
@@ -395,12 +456,12 @@ class AffectationScreenState extends ConsumerState<AffectationScreen> {
   void _applyFilters() {
     final filters = ref.read(affectationFiltersProvider);
     ref.read(affectationListProvider.notifier).searchAffectations(
-      widget.entrepriseId,
-      searchTerm: _searchController.text,
-      dateDebut: filters.dateDebut,
-      dateFin: filters.dateFin,
-      chantierId: filters.chantierId,
-      tache: filters.tache,
-    );
+          widget.entrepriseId,
+          searchTerm: _searchController.text,
+          dateDebut: filters.dateDebut,
+          dateFin: filters.dateFin,
+          chantierId: filters.chantierId,
+          tache: filters.tache,
+        );
   }
 }

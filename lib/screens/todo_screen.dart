@@ -38,10 +38,18 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Liste des Tâches'),
+        title: const Text(
+          'Liste des Tâches',
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xffea6b24),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(
+              Icons.filter_list,
+              color: Colors.white,
+            ),
             onPressed: () => _showFilterDialog(context),
           ),
         ],
@@ -49,42 +57,46 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
       body: todoProviderData.isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: const InputDecoration(
-                labelText: 'Rechercher',
-                prefixIcon: Icon(Icons.search),
-              ),
-              onChanged: (value) {
-                Future.microtask(() {
-                  ref.read(todoProvider).setSearchQuery(value);
-                  ref.read(todoProvider).searchTodos(widget.entrepriseId);
-                });
-              },
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    decoration: const InputDecoration(
+                      labelText: 'Rechercher',
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    onChanged: (value) {
+                      Future.microtask(() {
+                        ref.read(todoProvider).setSearchQuery(value);
+                        ref.read(todoProvider).searchTodos(widget.entrepriseId);
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: todoProviderData.todos.length,
+                    itemBuilder: (context, index) {
+                      final todo = todoProviderData.todos[index];
+                      return TodoListItem(
+                        todo: todo,
+                        onTap: () => _showEditDialog(context, todo),
+                        onDelete: () => _deleteTodo(context, todo.id),
+                        onStatusChanged: (newStatus) =>
+                            _updateTodoStatus(todo, newStatus),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: todoProviderData.todos.length,
-              itemBuilder: (context, index) {
-                final todo = todoProviderData.todos[index];
-                return TodoListItem(
-                  todo: todo,
-                  onTap: () => _showEditDialog(context, todo),
-                  onDelete: () => _deleteTodo(context, todo.id),
-                  onStatusChanged: (newStatus) =>
-                      _updateTodoStatus(todo, newStatus),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xffea6b24),
         onPressed: () => _showAddDialog(context),
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
     );
   }
@@ -95,7 +107,15 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Filtrer les tâches'),
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        title: Container(
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
+          ),
+          child: const Text('Filtrer les tâches', style: TextStyle(fontWeight: FontWeight.bold),)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -143,22 +163,38 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Nouvelle Tâche'),
-        content: TodoForm(
-          entrepriseId: widget.entrepriseId,  // Ajout de l'entrepriseId
-          onSubmit: (description, dueDate, priorite, montant, chantierId) async {
-            final todo = Todo(
-              entrepriseId: widget.entrepriseId,
-              description: description,
-              dueDate: dueDate,
-              priorite: priorite,
-              montant: montant,
-              idChantier: chantierId,
-              createdAt: DateTime.now(), id: '',
-            );
-            await todoNotifier.addTodo(todo);
-            Navigator.pop(context);
-          },
+        elevation: 1,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        content: SizedBox(
+          child: TodoForm(
+            entrepriseId: widget.entrepriseId,
+            titre: 'Nouvelle Tâche',
+            onSubmit:
+                (description, dueDate, priorite, montant, chantierId) async {
+              final todo = Todo(
+                entrepriseId: widget.entrepriseId,
+                description: description,
+                dueDate: dueDate,
+                priorite: priorite,
+                montant: montant,
+                idChantier: chantierId,
+                createdAt: DateTime.now(),
+                id: '',
+              );
+
+              await todoNotifier.addTodo(todo);
+
+              // Afficher un message de succès
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Tâche ajoutée avec succès!')),
+              );
+
+              // Fermer le dialog
+              Navigator.pop(context);
+            },
+          ),
         ),
       ),
     );
@@ -170,11 +206,13 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Modifier la tâche'),
+        //title: const Text(),
         content: TodoForm(
           initialTodo: todo,
-          entrepriseId: widget.entrepriseId,  // Ajout de l'entrepriseId
-          onSubmit: (description, dueDate, priorite, montant, chantierId) async {
+          entrepriseId: widget.entrepriseId,
+          titre: 'Modifier la tâche',
+          onSubmit:
+              (description, dueDate, priorite, montant, chantierId) async {
             final updatedTodo = todo.copyWith(
               description: description,
               dueDate: dueDate,
@@ -189,6 +227,7 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
       ),
     );
   }
+
   Future<void> _deleteTodo(BuildContext context, String todoId) async {
     final todoNotifier = ref.read(todoProvider);
 

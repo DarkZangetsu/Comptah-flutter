@@ -30,7 +30,9 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
     if (!_isInitialized) {
       Future(() {
         if (mounted) {
-          ref.read(depensesProvider(widget.entrepriseId).notifier).loadDepenses();
+          ref
+              .read(depensesProvider(widget.entrepriseId).notifier)
+              .loadDepenses();
         }
       });
       _isInitialized = true;
@@ -43,14 +45,26 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Dépenses'),
+        title: const Text(
+          'Dépenses',
+          style: TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xffea6b24),
+        elevation: 4,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
             onPressed: () => _showAddDepenseDialog(context),
           ),
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(
+              Icons.filter_list,
+              color: Colors.white,
+            ),
             onPressed: () => _showFilterDialog(context),
           ),
         ],
@@ -95,7 +109,8 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
               subtitle: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Date: ${DateFormat('dd/MM/yyyy').format(depense.jour)}'),
+                  Text(
+                      'Date: ${DateFormat('dd/MM/yyyy').format(depense.jour)}'),
                   Text('Montant: ${depense.montant.toStringAsFixed(2)} €'),
                   if (depense.type != null) Text('Type: ${depense.type}'),
                 ],
@@ -124,7 +139,17 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Nouvelle dépense'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        title: Container(
+          decoration: const BoxDecoration(
+              border: Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+          child: const Text(
+            'Nouvelle dépense',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
         content: SingleChildScrollView(
           child: Form(
             key: formKey,
@@ -132,9 +157,10 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Numéro de dépense'),
+                  decoration:
+                      const InputDecoration(labelText: 'Numéro de dépense'),
                   validator: (value) =>
-                  value?.isEmpty ?? true ? 'Champ requis' : null,
+                      value?.isEmpty ?? true ? 'Champ requis' : null,
                   onSaved: (value) => nDepense = value!,
                 ),
                 TextFormField(
@@ -147,7 +173,8 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                 ),
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Montant'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value?.isEmpty ?? true) return 'Champ requis';
                     final number = double.tryParse(value!);
@@ -157,7 +184,8 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                   onSaved: (value) => montant = double.parse(value!),
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Mode de transaction'),
+                  decoration:
+                      const InputDecoration(labelText: 'Mode de transaction'),
                   onSaved: (value) => mTransaction = value,
                 ),
                 TextButton(
@@ -174,6 +202,7 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                   },
                   child: Text(
                     'Date: ${DateFormat('dd/MM/yyyy').format(jour)}',
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
               ],
@@ -183,9 +212,14 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
+            child: const Text(
+              'Annuler',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
           TextButton(
+            style:
+                TextButton.styleFrom(backgroundColor: const Color(0xffea6b24)),
             onPressed: () {
               if (formKey.currentState?.validate() ?? false) {
                 formKey.currentState?.save();
@@ -207,7 +241,10 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                 Navigator.pop(context);
               }
             },
-            child: const Text('Ajouter'),
+            child: const Text(
+              'Ajouter',
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -227,7 +264,17 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Modifier la dépense'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        title: Container(
+            decoration: const BoxDecoration(
+                border:
+                    Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+            child: const Text(
+              'Modifier la dépense',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
         content: SingleChildScrollView(
           child: Form(
             key: formKey,
@@ -236,9 +283,10 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
               children: [
                 TextFormField(
                   initialValue: nDepense,
-                  decoration: const InputDecoration(labelText: 'Numéro de dépense'),
+                  decoration:
+                      const InputDecoration(labelText: 'Numéro de dépense'),
                   validator: (value) =>
-                  value?.isEmpty ?? true ? 'Champ requis' : null,
+                      value?.isEmpty ?? true ? 'Champ requis' : null,
                   onSaved: (value) => nDepense = value!,
                 ),
                 TextFormField(
@@ -254,7 +302,8 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                 TextFormField(
                   initialValue: montant.toString(),
                   decoration: const InputDecoration(labelText: 'Montant'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value?.isEmpty ?? true) return 'Champ requis';
                     final number = double.tryParse(value!);
@@ -265,7 +314,8 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                 ),
                 TextFormField(
                   initialValue: mTransaction,
-                  decoration: const InputDecoration(labelText: 'Mode de transaction'),
+                  decoration:
+                      const InputDecoration(labelText: 'Mode de transaction'),
                   onSaved: (value) => mTransaction = value,
                 ),
                 TextButton(
@@ -319,24 +369,27 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
     );
   }
 
-  Future<bool> _showDeleteConfirmationDialog(BuildContext context, Depense depense) async {
+  Future<bool> _showDeleteConfirmationDialog(
+      BuildContext context, Depense depense) async {
     return await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmer la suppression'),
-        content: Text('Voulez-vous vraiment supprimer la dépense "${depense.nDepense}" ?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Annuler'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirmer la suppression'),
+            content: Text(
+                'Voulez-vous vraiment supprimer la dépense "${depense.nDepense}" ?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Annuler'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Supprimer'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Supprimer'),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 
   void _deleteDepense(Depense depense) {
@@ -361,7 +414,15 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Filtrer les dépenses'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        title: Container(
+            decoration: const BoxDecoration(
+                border:
+                    Border(bottom: BorderSide(width: 1, color: Colors.grey))),
+            child: const Text('Filtrer les dépenses',
+                style: TextStyle(fontWeight: FontWeight.bold))),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -394,6 +455,7 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                       },
                       child: Text(
                         'Du: ${dateDebut != null ? DateFormat('dd/MM/yyyy').format(dateDebut!) : 'Choisir'}',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -414,6 +476,7 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                       },
                       child: Text(
                         'Au: ${dateFin != null ? DateFormat('dd/MM/yyyy').format(dateFin!) : 'Choisir'}',
+                        style: const TextStyle(color: Colors.black),
                       ),
                     ),
                   ),
@@ -437,22 +500,25 @@ class _DepenseScreenState extends ConsumerState<DepenseScreen> {
                   .loadDepenses();
               Navigator.pop(context);
             },
-            child: const Text('Réinitialiser'),
+            child: const Text('Réinitialiser', style: TextStyle(color: Colors.black),),
           ),
           TextButton(
+            style: TextButton.styleFrom(backgroundColor: const Color(0xffea6b24)),
             onPressed: () {
-              ref.read(depensesProvider(widget.entrepriseId).notifier).searchDepenses(
-                searchTerm: searchQuery,
-                dateDebut: dateDebut,
-                dateFin: dateFin,
-                type: selectedType,
-              );
+              ref
+                  .read(depensesProvider(widget.entrepriseId).notifier)
+                  .searchDepenses(
+                    searchTerm: searchQuery,
+                    dateDebut: dateDebut,
+                    dateFin: dateFin,
+                    type: selectedType,
+                  );
               Navigator.pop(context);
             },
-            child: const Text('Appliquer'),
+            child: const Text('Appliquer', style: TextStyle(color: Colors.white),),
           ),
         ],
       ),
     );
   }
-  }
+}

@@ -42,14 +42,25 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Revenus'),
+        title: const Text(
+          'Revenus',
+          style: const TextStyle(
+              fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        backgroundColor: const Color(0xffea6b24),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
             onPressed: () => _showAddRevenuDialog(context),
           ),
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const Icon(
+              Icons.filter_list,
+              color: Colors.white,
+            ),
             onPressed: () => _showFilterDialog(context),
           ),
         ],
@@ -122,7 +133,15 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Nouveau revenu'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        title: Container(
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
+          ),
+          child: const Text('Nouveau revenu', style: TextStyle(fontWeight: FontWeight.bold),),
+          ),
         content: SingleChildScrollView(
           child: Form(
             key: formKey,
@@ -130,8 +149,10 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Numéro de revenu'),
-                  validator: (value) => value?.isEmpty ?? true ? 'Champ requis' : null,
+                  decoration:
+                      const InputDecoration(labelText: 'Numéro de revenu'),
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'Champ requis' : null,
                   onSaved: (value) => nRevenu = value!,
                 ),
                 TextFormField(
@@ -143,16 +164,17 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
                   value: type,
                   items: ['Salaire', 'Bonus', 'Investissement']
                       .map((type) => DropdownMenuItem(
-                    value: type,
-                    child: Text(type),
-                  ))
+                            value: type,
+                            child: Text(type),
+                          ))
                       .toList(),
                   onChanged: (value) => type = value,
                   onSaved: (value) => type = value,
                 ),
                 TextFormField(
                   decoration: const InputDecoration(labelText: 'Montant'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value?.isEmpty ?? true) return 'Champ requis';
                     final number = double.tryParse(value!);
@@ -162,7 +184,8 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
                   onSaved: (value) => montant = double.parse(value!),
                 ),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Mode de transaction'),
+                  decoration:
+                      const InputDecoration(labelText: 'Mode de transaction'),
                   onSaved: (value) => mTransaction = value,
                 ),
                 TextButton(
@@ -188,7 +211,7 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
+            child: const Text('Annuler', style: TextStyle(color: Colors.black),),
           ),
           TextButton(
             onPressed: () {
@@ -205,18 +228,21 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
                   mTransaction: mTransaction,
                   createdAt: DateTime.now(),
                 );
-                ref.read(revenusProvider(widget.entrepriseId).notifier).addRevenu(newRevenu);
+                ref
+                    .read(revenusProvider(widget.entrepriseId).notifier)
+                    .addRevenu(newRevenu);
                 Navigator.pop(context);
               }
             },
-            child: const Text('Ajouter'),
+            child: const Text('Ajouter', style: TextStyle(color: Color(0xffea6b24)),),
           ),
         ],
       ),
     );
   }
 
-  Future<void> _showEditRevenuDialog(BuildContext context, Revenu revenu) async {
+  Future<void> _showEditRevenuDialog(
+      BuildContext context, Revenu revenu) async {
     final formKey = GlobalKey<FormState>();
     String nRevenu = revenu.nRevenu;
     DateTime jour = revenu.jour;
@@ -228,6 +254,9 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
         title: const Text('Modifier le revenu'),
         content: SingleChildScrollView(
           child: Form(
@@ -237,8 +266,10 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
               children: [
                 TextFormField(
                   initialValue: nRevenu,
-                  decoration: const InputDecoration(labelText: 'Numéro de revenu'),
-                  validator: (value) => value?.isEmpty ?? true ? 'Champ requis' : null,
+                  decoration:
+                      const InputDecoration(labelText: 'Numéro de revenu'),
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'Champ requis' : null,
                   onSaved: (value) => nRevenu = value!,
                 ),
                 TextFormField(
@@ -251,9 +282,9 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
                   value: type,
                   items: ['Salaire', 'Bonus', 'Investissement']
                       .map((type) => DropdownMenuItem(
-                    value: type,
-                    child: Text(type),
-                  ))
+                            value: type,
+                            child: Text(type),
+                          ))
                       .toList(),
                   onChanged: (value) => type = value,
                   onSaved: (value) => type = value,
@@ -261,7 +292,8 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
                 TextFormField(
                   initialValue: montant.toString(),
                   decoration: const InputDecoration(labelText: 'Montant'),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
                   validator: (value) {
                     if (value?.isEmpty ?? true) return 'Champ requis';
                     final number = double.tryParse(value!);
@@ -272,7 +304,8 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
                 ),
                 TextFormField(
                   initialValue: mTransaction,
-                  decoration: const InputDecoration(labelText: 'Mode de transaction'),
+                  decoration:
+                      const InputDecoration(labelText: 'Mode de transaction'),
                   onSaved: (value) => mTransaction = value,
                 ),
                 TextButton(
@@ -312,7 +345,9 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
                   montant: montant,
                   mTransaction: mTransaction,
                 );
-                ref.read(revenusProvider(widget.entrepriseId).notifier).updateRevenu(updatedRevenu);
+                ref
+                    .read(revenusProvider(widget.entrepriseId).notifier)
+                    .updateRevenu(updatedRevenu);
                 Navigator.pop(context);
               }
             },
@@ -324,13 +359,19 @@ class _RevenuScreenState extends ConsumerState<RevenuScreen> {
   }
 
   Future<void> _deleteRevenu(Revenu revenu) async {
-    await ref.read(revenusProvider(widget.entrepriseId).notifier).deleteRevenu(revenu as String);
+    await ref
+        .read(revenusProvider(widget.entrepriseId).notifier)
+        .deleteRevenu(revenu as String);
   }
 
-  Future<bool?> _showDeleteConfirmationDialog(BuildContext context, Revenu revenu) {
+  Future<bool?> _showDeleteConfirmationDialog(
+      BuildContext context, Revenu revenu) {
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
         title: const Text('Supprimer le revenu'),
         content: const Text('Êtes-vous sûr de vouloir supprimer ce revenu ?'),
         actions: [

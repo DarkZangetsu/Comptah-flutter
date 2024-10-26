@@ -7,7 +7,8 @@ import 'debouncer.dart';
 class PersonnelScreen extends ConsumerStatefulWidget {
   final String entrepriseId;
 
-  const PersonnelScreen({Key? key, required this.entrepriseId}) : super(key: key);
+  const PersonnelScreen({Key? key, required this.entrepriseId})
+      : super(key: key);
 
   @override
   ConsumerState<PersonnelScreen> createState() => _PersonnelScreenState();
@@ -21,7 +22,9 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(personnelListProvider.notifier).loadPersonnel(widget.entrepriseId);
+      ref
+          .read(personnelListProvider.notifier)
+          .loadPersonnel(widget.entrepriseId);
     });
   }
 
@@ -39,12 +42,20 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Personnel'),
+        title: const Text(
+          'Personnel',
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xffea6b24),
         centerTitle: true,
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xffea6b24),
         onPressed: () => _showAddPersonnelDialog(context),
-        child: const Icon(Icons.add),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
       ),
       body: Column(
         children: [
@@ -61,7 +72,9 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
               ),
               onChanged: (value) {
                 _searchDebouncer.run(() {
-                  ref.read(personnelListProvider.notifier).searchPersonnel(widget.entrepriseId, value);
+                  ref
+                      .read(personnelListProvider.notifier)
+                      .searchPersonnel(widget.entrepriseId, value);
                 });
               },
             ),
@@ -78,7 +91,9 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
                 }
                 return RefreshIndicator(
                   onRefresh: () async {
-                    await ref.read(personnelListProvider.notifier).loadPersonnel(widget.entrepriseId);
+                    await ref
+                        .read(personnelListProvider.notifier)
+                        .loadPersonnel(widget.entrepriseId);
                   },
                   child: ListView.builder(
                     itemCount: personnel.length,
@@ -96,13 +111,18 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
                           return await _showDeleteConfirmation(context, member);
                         },
                         onDismissed: (direction) {
-                          ref.read(personnelListProvider.notifier).deletePersonnel(member.id);
+                          ref
+                              .read(personnelListProvider.notifier)
+                              .deletePersonnel(member.id);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Personnel supprimé avec succès')),
+                            const SnackBar(
+                                content:
+                                    Text('Personnel supprimé avec succès')),
                           );
                         },
                         child: Card(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
                           child: ListTile(
                             title: Text(
                               member.nom,
@@ -112,9 +132,9 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
                             ),
                             subtitle: member.remarque != null
                                 ? Text(
-                              member.remarque!,
-                              style: theme.textTheme.bodySmall,
-                            )
+                                    member.remarque!,
+                                    style: theme.textTheme.bodySmall,
+                                  )
                                 : null,
                             trailing: PopupMenuButton(
                               icon: const Icon(Icons.more_vert),
@@ -133,9 +153,11 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
                                   value: 'delete',
                                   child: Row(
                                     children: [
-                                      Icon(Icons.delete, size: 20, color: Colors.red),
+                                      Icon(Icons.delete,
+                                          size: 20, color: Colors.red),
                                       SizedBox(width: 8),
-                                      Text('Supprimer', style: TextStyle(color: Colors.red)),
+                                      Text('Supprimer',
+                                          style: TextStyle(color: Colors.red)),
                                     ],
                                   ),
                                 ),
@@ -171,7 +193,14 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Ajouter un membre du personnel'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
+        ),
+        title: Container(
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(width: 1, color: Colors.grey))
+          ),
+          child: const Text('Ajouter un membre du personnel', style: TextStyle(fontWeight: FontWeight.bold),)),
         content: SingleChildScrollView(
           child: Form(
             key: formKey,
@@ -209,31 +238,33 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
+            child: const Text('Annuler', style: TextStyle(color: Colors.black),),
           ),
           ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xffea6b24)),
             onPressed: () {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
                 ref.read(personnelListProvider.notifier).addPersonnel(
-                  widget.entrepriseId,
-                  nom,
-                  remarque,
-                );
+                      widget.entrepriseId,
+                      nom,
+                      remarque,
+                    );
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Personnel ajouté avec succès')),
                 );
               }
             },
-            child: const Text('Ajouter'),
+            child: const Text('Ajouter', style: TextStyle(color: Colors.white),),
           ),
         ],
       ),
     );
   }
 
-  Future<void> _showEditPersonnelDialog(BuildContext context, Personnel personnel) async {
+  Future<void> _showEditPersonnelDialog(
+      BuildContext context, Personnel personnel) async {
     final formKey = GlobalKey<FormState>();
     String nom = personnel.nom;
     String? remarque = personnel.remarque;
@@ -289,14 +320,15 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
               if (formKey.currentState!.validate()) {
                 formKey.currentState!.save();
                 ref.read(personnelListProvider.notifier).updatePersonnel(
-                  personnel.copyWith(
-                    nom: nom,
-                    remarque: remarque,
-                  ),
-                );
+                      personnel.copyWith(
+                        nom: nom,
+                        remarque: remarque,
+                      ),
+                    );
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Personnel modifié avec succès')),
+                  const SnackBar(
+                      content: Text('Personnel modifié avec succès')),
                 );
               }
             },
@@ -307,27 +339,30 @@ class _PersonnelScreenState extends ConsumerState<PersonnelScreen> {
     );
   }
 
-  Future<bool> _showDeleteConfirmation(BuildContext context, Personnel personnel) async {
+  Future<bool> _showDeleteConfirmation(
+      BuildContext context, Personnel personnel) async {
     return await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Supprimer le membre du personnel'),
-        content: Text('Voulez-vous vraiment supprimer "${personnel.nom}" ?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Annuler'),
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Supprimer le membre du personnel'),
+            content:
+                Text('Voulez-vous vraiment supprimer "${personnel.nom}" ?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Annuler'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Supprimer'),
+              ),
+            ],
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Supprimer'),
-          ),
-        ],
-      ),
-    ) ?? false;
+        ) ??
+        false;
   }
 }
