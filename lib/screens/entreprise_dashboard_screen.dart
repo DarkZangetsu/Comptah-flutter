@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:project/screens/revenu_screen.dart';
 import 'package:project/screens/todo_screen.dart';
-import 'package:provider/provider.dart';
 import 'package:project/screens/personnel_screen.dart';
 import '../models/entreprise.dart';
-import '../providers/personnel_provider.dart';
-import '../services/database_helper.dart';
 import 'affectation_screen.dart';
 import 'chantier_screen.dart';
+import 'depense_screen.dart';
 
 class EnterpriseDashboardScreen extends StatelessWidget {
   final Entreprise enterprise;
@@ -60,14 +59,28 @@ class EnterpriseDashboardScreen extends StatelessWidget {
                   'Revenus',
                   Icons.attach_money,
                   Colors.green,
-                      () {},
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RevenuScreen(entrepriseId: enterprise.id),
+                          ),
+                        );
+                      },
                 ),
                 _buildMenuCard(
                   context,
                   'Dépenses',
                   Icons.money_off,
                   Colors.red,
-                      () {},
+                      () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DepenseScreen(entrepriseId: enterprise.id),
+                          ),
+                        );
+                      },
                 ),
                 _buildMenuCard(
                   context,

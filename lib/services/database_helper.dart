@@ -1,8 +1,10 @@
 import '../config/supabase_config.dart';
 import '../models/affectation.dart';
 import '../models/chantier.dart';
+import '../models/depense.dart';
 import '../models/entreprise.dart';
 import '../models/personnel.dart';
+import '../models/revenu.dart';
 import '../models/todo.dart';
 import '../models/users.dart';
 
@@ -466,4 +468,204 @@ class DatabaseHelper {
       rethrow;
     }
   }
+
+  //Depenses methods
+  Future<List<Map<String, dynamic>>> getDepenses(String entrepriseId) async {
+    try {
+      final response = await _client
+          .from('depense')
+          .select('''
+          *,
+          chantier:id_chantier(n_chantier)
+        ''')
+          .eq('entreprise_id', entrepriseId)
+          .order('jour', ascending: false);
+
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> searchDepenses(String entrepriseId, {
+    String? searchTerm,
+    DateTime? dateDebut,
+    DateTime? dateFin,
+    String? chantierId,
+    String? type,
+  }) async {
+    try {
+      var query = _client
+          .from('depense')
+          .select('''
+          *,
+          chantier:id_chantier(n_chantier)
+        ''')
+          .eq('entreprise_id', entrepriseId);
+
+      if (searchTerm != null && searchTerm.isNotEmpty) {
+        query = query.or('motif.ilike.%$searchTerm%,n_depense.ilike.%$searchTerm%');
+      }
+
+      if (dateDebut != null) {
+        query = query.gte('jour', dateDebut.toIso8601String());
+      }
+
+      if (dateFin != null) {
+        query = query.lte('jour', dateFin.toIso8601String());
+      }
+
+      if (chantierId != null) {
+        query = query.eq('id_chantier', chantierId);
+      }
+
+      if (type != null && type.isNotEmpty) {
+        query = query.eq('type', type);
+      }
+
+      final response = await query.order('jour', ascending: false);
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Depense> createDepense(Depense depense) async {
+    try {
+      final response = await _client
+          .from('depense')
+          .insert(depense.toJson())
+          .select('''
+          *,
+          chantier:id_chantier(n_chantier)
+        ''')
+          .single();
+
+      return Depense.fromJson(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateDepense(Depense depense) async {
+    try {
+      await _client
+          .from('depense')
+          .update(depense.toJson())
+          .eq('id', depense.id);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteDepense(String depenseId) async {
+    try {
+      await _client
+          .from('depense')
+          .delete()
+          .eq('id', depenseId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  //Revenu methods :
+
+  Future<List<Map<String, dynamic>>> getRevenus(String entrepriseId) async {
+    try {
+      final response = await _client
+          .from('revenu')
+          .select('''
+        *
+      ''')
+          .eq('entreprise_id', entrepriseId)
+          .order('jour', ascending: false);
+
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> searchRevenus(String entrepriseId, {
+    String? searchTerm,
+    DateTime? dateDebut,
+    DateTime? dateFin,
+    String? chantierId,
+    String? type,
+  }) async {
+    try {
+      var query = _client
+          .from('revenu')
+          .select('''
+        *,
+        chantier:id_chantier(n_chantier)
+      ''')
+          .eq('entreprise_id', entrepriseId);
+
+      if (searchTerm != null && searchTerm.isNotEmpty) {
+        query = query.or('motif.ilike.%$searchTerm%,n_revenu.ilike.%$searchTerm%');
+      }
+
+      if (dateDebut != null) {
+        query = query.gte('jour', dateDebut.toIso8601String());
+      }
+
+      if (dateFin != null) {
+        query = query.lte('jour', dateFin.toIso8601String());
+      }
+
+      if (type != null && type.isNotEmpty) {
+        query = query.eq('type', type);
+      }
+
+      final response = await query.order('jour', ascending: false);
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Revenu> createRevenu(Revenu revenu) async {
+    try {
+      final response = await _client
+          .from('revenu')
+          .insert(revenu.toJson())
+          .select('''
+        *
+      ''')
+          .single();
+
+      return Revenu.fromJson(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> updateRevenu(Revenu revenu) async {
+    try {
+      await _client
+          .from('revenu')
+          .update(revenu.toJson())
+          .eq('id', revenu.id);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteRevenu(String revenuId) async {
+    try {
+      await _client
+          .from('revenu')
+          .delete()
+          .eq('id', revenuId);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  //
+
+
 }

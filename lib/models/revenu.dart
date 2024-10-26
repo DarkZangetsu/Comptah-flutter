@@ -4,6 +4,7 @@ class Revenu {
   final String nRevenu;
   final DateTime jour;
   final String? raison;
+  final String? type;
   final double montant;
   final String? mTransaction;
   final String? remarque;
@@ -15,6 +16,7 @@ class Revenu {
     required this.nRevenu,
     required this.jour,
     this.raison,
+    this.type,
     required this.montant,
     this.mTransaction,
     this.remarque,
@@ -28,6 +30,7 @@ class Revenu {
       nRevenu: json['n_revenu'],
       jour: DateTime.parse(json['jour']),
       raison: json['raison'],
+      type: json['type'],
       montant: json['montant'].toDouble(),
       mTransaction: json['m_transaction'],
       remarque: json['remarque'],
@@ -42,6 +45,7 @@ class Revenu {
       'n_revenu': nRevenu,
       'jour': jour.toIso8601String(),
       'raison': raison,
+      'type': type,
       'montant': montant,
       'm_transaction': mTransaction,
       'remarque': remarque,
@@ -55,6 +59,7 @@ class Revenu {
     String? nRevenu,
     DateTime? jour,
     String? raison,
+    String? type,
     double? montant,
     String? mTransaction,
     String? remarque,
@@ -66,6 +71,7 @@ class Revenu {
       nRevenu: nRevenu ?? this.nRevenu,
       jour: jour ?? this.jour,
       raison: raison ?? this.raison,
+      type: type ?? this.type,
       montant: montant ?? this.montant,
       mTransaction: mTransaction ?? this.mTransaction,
       remarque: remarque ?? this.remarque,

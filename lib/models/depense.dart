@@ -5,6 +5,7 @@ class Depense {
   final DateTime jour;
   final String? idChantier;
   final String? motif;
+  final String? type;
   final double montant;
   final String? mTransaction;
   final DateTime createdAt;
@@ -16,6 +17,7 @@ class Depense {
     required this.jour,
     this.idChantier,
     this.motif,
+    this.type,
     required this.montant,
     this.mTransaction,
     required this.createdAt,
@@ -29,6 +31,7 @@ class Depense {
       jour: DateTime.parse(json['jour']),
       idChantier: json['id_chantier'],
       motif: json['motif'],
+      type: json['type'],
       montant: json['montant'].toDouble(),
       mTransaction: json['m_transaction'],
       createdAt: DateTime.parse(json['created_at']),
@@ -43,6 +46,7 @@ class Depense {
       'jour': jour.toIso8601String(),
       'id_chantier': idChantier,
       'motif': motif,
+      'type': type,
       'montant': montant,
       'm_transaction': mTransaction,
       'created_at': createdAt.toIso8601String(),
@@ -56,6 +60,7 @@ class Depense {
     DateTime? jour,
     String? idChantier,
     String? motif,
+    String? type,
     double? montant,
     String? mTransaction,
     DateTime? createdAt,
@@ -67,6 +72,7 @@ class Depense {
       jour: jour ?? this.jour,
       idChantier: idChantier ?? this.idChantier,
       motif: motif ?? this.motif,
+      type: type ?? this.type,
       montant: montant ?? this.montant,
       mTransaction: mTransaction ?? this.mTransaction,
       createdAt: createdAt ?? this.createdAt,
